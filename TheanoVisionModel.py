@@ -66,12 +66,12 @@ class TheanoVisionModel(param.Parameterized):
           if type(shape) == tuple:
              self.free_params[name] = (self.free_param_count,shape)
              self.free_param_count = self.free_param_count + shape[0]*shape[1]
-             for i in xrange(0,shape[0]*shape[1]):
+             for i in range(0,shape[0]*shape[1]):
                  self.bounds.append(bounds)
           else:
              self.free_params[name] = (self.free_param_count,shape)
              self.free_param_count = self.free_param_count + shape
-             for i in xrange(0,shape):
+             for i in range(0,shape):
                  self.bounds.append(bounds)
           
           return self.getParam(self.K,name)
@@ -176,15 +176,15 @@ class TheanoVisionModel(param.Parameterized):
             if param_names == None: 
                param_names = self.free_params.keys()
             
-            print "Model parameters:"
+            print ("Model parameters:")
             for p in param_names:
                 if type(self.free_params[p][1]) == tuple:
                         (i,(x,y)) = self.free_params[p]
-                        print p, ": ", numpy.reshape(param_vector[i:i+x*y],(x,y))
+                        print (p, ": ", numpy.reshape(param_vector[i:i+x*y],(x,y)))
                 else:
                         (i,l) = self.free_params[p]
-                        print i
-                        print p, ": ", param_vector[i:i+l]
+                        print (i)
+                        print (p, ": ", param_vector[i:i+l])
         
         def create_random_parametrization(self,s):
             """

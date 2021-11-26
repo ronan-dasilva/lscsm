@@ -102,7 +102,7 @@ def sortOutLoading(data_set_name):
             dataset_loc = "/home/jan/projects/lscsm/data/Mice/2010_04_22/spiking_3-7.dat"
             val_dataset_loc = "/home/jan/projects/lscsm/data/Mice/2010_04_22/val/spiking_3-7.dat"
         else:
-            print 'ERROR: no no-spiking data'
+            print('ERROR: no no-spiking data')
         num_cells = 102    
         sepparate_validation_set = True
         num_rep=1
@@ -161,14 +161,14 @@ def sortOutLoading(data_set_name):
         from copy import deepcopy
         (index,raw_val_set) = valdataset
         rr=[]
-        for i in xrange(0,val_reps):
+        for i in range(0,val_reps):
             rr.append(generateTrainingSet(averageRepetitions((index,deepcopy(raw_val_set)),reps=[i])))
         raw_val_set = rr
         valdataset = averageRangeFrames(valdataset,0,1)
         valdataset = averageRepetitions(valdataset)
         validation_set = generateTrainingSet(valdataset)
         if single_file_input:
-                validation_inputs=generateInputsFromBinaryFil(valdataset,val_inputs_directory,val_input_match_string,params["density"])
+                validation_inputs=generateInputsFromBinaryFile(valdataset,val_inputs_directory,val_input_match_string,params["density"])
         else:
                 validation_inputs=generateInputs(valdataset,val_inputs_directory,val_input_match_string,params["density"],offset=0)
 
@@ -198,7 +198,7 @@ def sortOutLoading(data_set_name):
         training_set = numpy.divide(training_set,numpy.reshape(means,(1,num_cells)))*m
         validation_set = numpy.divide(validation_set,numpy.reshape(means,(1,num_cells)))*m
         if sepparate_validation_set:
-                for i in xrange(0,val_reps):
+                for i in range(0,val_reps):
                       raw_val_set[i] = numpy.divide(raw_val_set[i],numpy.reshape(means,(1,num_cells)))*m
         
 
@@ -216,28 +216,28 @@ def sortOutLoading(data_set_name):
     if not sepparate_validation_set:
        raw_val_set = [validation_set]
     
-    print "Training set size:"
-    print numpy.shape(training_set)
+    print("Training set size:")
+    print(numpy.shape(training_set))
     return (sizex,sizey,training_inputs,training_set,validation_inputs,validation_set,raw_val_set)
     
     
 def loadSimpleDataSet(filename,num_stimuli,n_cells,num_rep=1,num_frames=1,offset=0,transpose=False):
-    f = file(filename, "r") 
+    f = open(filename, "r") 
     data = [line.split() for line in f]
     if transpose:
        data = numpy.array(data).transpose()         
     
     f.close()
-    print "Dataset shape:", numpy.shape(data)
+    print("Dataset shape:", numpy.shape(data))
 
-    dataset = [([[] for i in xrange(0,num_stimuli)]) for j in xrange(0,n_cells)]
+    dataset = [([[] for i in range(0,num_stimuli)]) for j in range(0,n_cells)]
     
     
-    for k in xrange(0,n_cells):
-        for i in xrange(0,num_stimuli):
-            for rep in xrange(0,num_rep):
+    for k in range(0,n_cells):
+        for i in range(0,num_stimuli):
+            for rep in range(0,num_rep):
                 f = []
-                for fr in xrange(0,num_frames):
+                for fr in range(0,num_frames):
                        f.append(float(data[rep*num_stimuli+i*num_frames+fr+offset][k]))
                 dataset[k][i].append(f)
     return (numpy.arange(0,num_stimuli),dataset)
@@ -252,10 +252,10 @@ def averageRepetitions(dataset,reps=None):
        reps = numpy.arange(0,num_rep,1)
 
     for cell in data:
-        for stimulus in xrange(0,num_stim):
+        for stimulus in range(0,num_stim):
             r = [0 for i in range(0,num_frames)]
             for rep in reps:
-                for f in xrange(0,num_frames):
+                for f in range(0,num_frames):
                     r[f]+=cell[stimulus][rep][f]/(len(reps)*1.0)
             
             cell[stimulus]=[r]
@@ -275,7 +275,7 @@ def splitDataset(dataset,ratio):
     else:
         tresh = ratio
 
-    for i in xrange(0,num_stim):
+    for i in range(0,num_stim):
         #if i >= num_stim - numpy.ceil(tresh):
         if i <= numpy.floor(tresh):
             index1.append(index[i])
@@ -285,7 +285,7 @@ def splitDataset(dataset,ratio):
     for cell in data:
         d1=[]
         d2=[]
-        for i in xrange(0,num_stim):
+        for i in range(0,num_stim):
             #if i >= num_stim - numpy.ceil(tresh):
             if i <= numpy.floor(tresh):
                d1.append(cell[i])
@@ -311,14 +311,14 @@ def generateTrainingSet(dataset):
 def generateInputsFromBinaryFile(dataset,directory,image_matching_string):
     (index,data) = dataset      
     
-    f = file(directory + image_matching_string, "r") 
+    f = open(directory + image_matching_string, "r") 
     data = [numpy.array(line.split()) for line in f]
     f.close()
     ins = []
     for j in index:
         b = data[j]
         z = []
-        for i in xrange(0,len(b)):
+        for i in range(0,len(b)):
             z.append(float(b[i]))
         s=numpy.sqrt(len(b))        
         ins.append(numpy.reshape(numpy.array(z),(s,s))) 
@@ -330,7 +330,7 @@ def generateInputs(dataset,directory,image_matching_string,density,offset):
     # ALERT ALERT ALERT We do not handle repetitions yet!!!!!
     image_filenames=[directory+image_matching_string %(i+offset) for i in index]
     ins = []
-    for j in xrange(0,len(index)):
+    for j in range(0,len(index)):
         #inputs[j].pattern_sampler.whole_pattern_output_fns=[]
         image = Image.open(image_filenames[j])
         (width,height) = image.size
@@ -350,7 +350,7 @@ def averageRangeFrames(dataset,min,max):
 
     for cell in data:
         for stimulus in cell:
-            for r in xrange(0,len(stimulus)):
+            for r in range(0,len(stimulus)):
                 stimulus[r]=[numpy.average(stimulus[r][min:max])]
 
     return (index,data)
@@ -364,6 +364,6 @@ def cut_out_images_set(inputs,size,pos):
         for i in inputs:
                 inp.append(i[x:x+size,y:y+size])
     else:
-        print "cut_out_images_set: out of bounds"
+        print("cut_out_images_set: out of bounds")
     return inp
     

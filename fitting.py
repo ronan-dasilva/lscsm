@@ -2,7 +2,6 @@ import numpy as np
 from scipy.optimize import fmin_tnc
 from visualization import computeCorr
 from traceback import format_exc
-from os import rename
 from checkpointing import saveResults
     
 def fitLSCSM(lscsm,Ks,training_inputs,training_set,validation_inputs,validation_set,fit_params={},checkpointName=None,compCorr=False):
@@ -27,8 +26,8 @@ def fitLSCSM(lscsm,Ks,training_inputs,training_set,validation_inputs,validation_
         fit_params['n_rep']=0
 
     try:
-        print "Starting fitting"  
-        for i in xrange(0,fit_params['numEpochs']):
+        print("Starting fitting")
+        for i in range(0,fit_params['numEpochs']):
             
             if i == 0:
                 terr.append(func(np.array(Ks))/num_neurons/len(training_set))
@@ -37,7 +36,7 @@ def fitLSCSM(lscsm,Ks,training_inputs,training_set,validation_inputs,validation_
                 verr.append(func(np.array(Ks))/num_neurons/len(validation_set))
                 lscsm.X.set_value(training_inputs.astype(lscsm.X.dtype))
                 lscsm.Y.set_value(training_set.astype(lscsm.X.dtype))
-                print "Before training: ", i, "train error: ",  terr[-1], "val error: ", verr[-1]
+                print ("Before training: ", i, "train error: ",  terr[-1], "val error: ", verr[-1])
                 
 
             # Do epochSize steps of optimization
@@ -58,20 +57,20 @@ def fitLSCSM(lscsm,Ks,training_inputs,training_set,validation_inputs,validation_
                 vcorr.append(computeCorr(lscsm.response(validation_inputs,Ks),validation_set).mean())
                 tcorr.append(computeCorr(lscsm.response(training_inputs,Ks),training_set).mean())              
             
-            if checkpointName<>None:
+            if checkpointName!=None:
                 # Save temporary results into files
                 fit_params['n_rep']+=fit_params['epochSize']
                 saveResults(lscsm,fit_params,K=Ks,errors=[terr,verr],corr=[tcorr,vcorr],prefix=checkpointName)
              
             # Display temporary error and correlation values 
             if compCorr:
-                print "Finished epoch: ", i, "train error: ",  terr[-1], "val error: ", verr[-1], "train corr:", tcorr[-1], "val corr:", vcorr[-1]
+                print ("Finished epoch: ", i, "train error: ",  terr[-1], "val error: ", verr[-1], "train corr:", tcorr[-1], "val corr:", vcorr[-1])
             else:
-                print "Finished epoch: ", i, "train error: ",  terr[-1], "val error: ", verr[-1]
+                print ("Finished epoch: ", i, "train error: ",  terr[-1], "val error: ", verr[-1])
 
     except:
         # If there was some error, print its description
-        print format_exc()
+        print (format_exc())
             
     finally:
         # Even if there was an error, return results:            

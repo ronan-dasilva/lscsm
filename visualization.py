@@ -10,7 +10,7 @@ def computeCorr(pred_act,responses):
     num_pres,num_neurons = np.shape(responses)
     corr=np.zeros(num_neurons)
     
-    for i in xrange(0,num_neurons):
+    for i in range(0,num_neurons):
         if np.all(pred_act[:,i]==0) & np.all(responses[:,i]==0):
             corr[i]=1.
         elif not(np.all(pred_act[:,i]==0) | np.all(responses[:,i]==0)):
@@ -32,6 +32,6 @@ def printCorrelationAnalysis(act,val_act,pred_act,pred_val_act):
     train_c=computeCorr(pred_act,act)
     val_c=computeCorr(pred_val_act,val_act)
     
-    print 'Correlation Coefficients (training/validation): ' + str(np.mean(train_c)) + '/' + str(np.mean(val_c))
+    print ('Correlation Coefficients (training/validation): ' + str(np.mean(train_c)) + '/' + str(np.mean(val_c)))
     return (train_c,val_c)
 

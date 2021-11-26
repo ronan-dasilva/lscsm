@@ -2,7 +2,7 @@ import numpy as np
 from datetime import datetime
 from pprint import pformat
 from struct import pack, unpack
-from HSM import HSM  
+#from HSM import HSM
 from os.path import isfile
 
 
@@ -37,13 +37,13 @@ def saveResults(lscsm,suppl_params,K=None,errors=None,corr=None,prefix='lscsmfit
     filenames.append(prefix+'_metaparams')
     
     # Save successive values of training and validation error
-    if not(errors in [None,[],[None,None],[[],[]]]):
+    if not (errors in [None,[],[None,None],[[],[]]]):
         assert len(errors)==2
         saveMat(errors,prefix+'_error')
         filenames.append(prefix+'_error')
     
     # Save successive values of training and validation correlation    
-    if not(corr in [None,[],[None,None],[[],[]]]):
+    if not (corr in [None,[],[None,None],[[],[]]]):
         assert len(corr)==2
         saveMat(corr,prefix+'_corr')
         filenames.append(prefix+'_corr')
@@ -93,9 +93,9 @@ def restoreLSCSM(checkpointname,training_inputs,training_set,update_mp={}):
     if isfile(checkpointname+'_K'):
         K=loadVec(checkpointname+'_K')
         if not(all([update_mp.keys()[i] in ['error_function', 'name'] for i in range(len(update_mp.keys()))])):
-            print 'WARNING: Updating of meta-parameters might have changed model structure: the reloaded parameter vector (K) might not be compatible with it'
+            print ('WARNING: Updating of meta-parameters might have changed model structure: the reloaded parameter vector (K) might not be compatible with it')
     else:
         K=None
-        print 'WARNING:Parameter vector (K) file not found'       
+        print ('WARNING:Parameter vector (K) file not found')
     
     return lscsm, K, suppl_params
